@@ -1,8 +1,9 @@
+/* eslint-disable no-unused-vars */
 import logo from './logo.svg';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Container, InputGroup, FormControl , Button , Row , Card, Form} from 'react-bootstrap' ;
-import  {useState , useEffect} from 'react';
+import {Container, InputGroup , FormControl, Button, Row, Card} from 'react-bootstrap'
+import { useEffect, useState } from 'react';
 
 const CLIENT_ID = "bd06528514ec44b9a70a43e27d21e466";
 const CLIENT_SECRET = "21907bceb0cc4dfcaa2670cde7717e4e";
@@ -24,8 +25,6 @@ function App(){
     .then(result => result.json())
     .then(data => console.log(data))
   }, [])
-
-
 
 
   return(
