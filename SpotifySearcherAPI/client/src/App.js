@@ -48,15 +48,17 @@ function App(){
 
     //With Artist ID and grab all the albums from that artist
 
-    var ret = await fetch ('https://api.spotify.com/v1/artists/' + artistID + '/albums' + '?include_groups=album&market=US&limit=50', searchParameters)
+    var returnedAlbums = await fetch ('https://api.spotify.com/v1/artists/' + artistID + '/albums' + '?include_groups=album&market=US&limit=50', searchParameters)
       .then(response => response.json())
-      .then(data => {console.log(data);
+      .then(data => {
+        console.log(data);
+        setAlbums(data.items);
       });
     //Display all those albums to the user
   
   
   }
-
+console.log(albums)
   return(
     <div className='App'>
     <Container>
@@ -78,12 +80,16 @@ function App(){
     </Container>
     <Container>
       <Row className = "mx-2 row row-cols-4">
-      <Card>
-        <Card.Img src = "#"/>
-        <Card.Body>
-          <Card.Title>Album name here</Card.Title>
-        </Card.Body>
-      </Card>
+        {albums.map((album, i) => {
+          console.log(album);
+          return(
+            <Card>
+              <Card.Img src = {album.images[0].url}/>
+              <Card.Body>
+                <Card.Title>{album.name}</Card.Title>
+              </Card.Body>
+            </Card>     
+        )})}     
       </Row>
     </Container>
     </div>
