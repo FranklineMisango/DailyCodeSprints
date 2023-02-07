@@ -7,11 +7,12 @@ import { useEffect, useState } from 'react';
 
 const CLIENT_ID = "bd06528514ec44b9a70a43e27d21e466";
 const CLIENT_SECRET = "21907bceb0cc4dfcaa2670cde7717e4e";
-
+ 
 
 function App(){
   const[searchInput, setSearchInput] = useState("");
-
+  const[accessToken, setAccessToken] = useState("");
+  const[albums, setAlbums] = useState([]);
   useEffect(() => {
     //API Access Token
     var authParameters = {
@@ -23,9 +24,38 @@ function App(){
     }
     fetch('https://accounts.spotify.com/api/token', authParameters)
     .then(result => result.json())
-    .then(data => console.log(data))
+    .then(data => setAccessToken(data.access_token))
   }, [])
 
+
+  // search
+
+  async function search() {
+    console.log("Searching for " + searchInput); //Ascertain we are searching for the required artist
+    
+    //Get request using search to get the Artist ID
+    var searchParameters = {
+      method:'GET',
+      headers: {
+        'Content-Type':'application/json',
+        'Authorization': 'Bearer ' + accessToken
+      }
+    }
+    var artistID = await fetch('https://api.spotify.com/v1/search?q=' + searchInput + '&type=artist', searchParameters)
+      .then(response => response.json())
+      .then(data => {return data.artists.items[0].id})
+    console.log("Artist ID is " + artistID)
+
+    //With Artist ID and grab all the albums from that artist
+
+    var ret = await fetch ('https://api.spotify.com/v1/artists/' + artistID + '/albums' + '?include_groups=album&market=US&limit=50', searchParameters)
+      .then(response => response.json())
+      .then(data => {console.log(data);
+      });
+    //Display all those albums to the user
+  
+  
+  }
 
   return(
     <div className='App'>
@@ -36,12 +66,12 @@ function App(){
           type='input'
           onKeyPress={event=> {
             if(event.key == "Enter"){
-              console.log("Pressed Enter")
+              search()
             }
           }}
           onChange = {event => setSearchInput(event.target.value)}
         />
-        <Button onClick={event => {console.log("Clicked Button")}}>
+        <Button onClick={search}>
           Search
         </Button>
       </InputGroup>
